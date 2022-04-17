@@ -30,7 +30,7 @@ class _LogBarState extends State<LogBar> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.all(paddingSpace),
-                  hintText: 'Start logging here or type \'?\' to search.',
+                  hintText: 'This day is going to be beautiful',
                 ),
               ),
             ),
@@ -40,7 +40,7 @@ class _LogBarState extends State<LogBar> {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.question_mark_sharp),
+                      icon: const Icon(Icons.search),
                       iconSize: 12,
                       onPressed: () {},
                     ),
@@ -51,16 +51,31 @@ class _LogBarState extends State<LogBar> {
                     ),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  iconSize: 12,
-                  onPressed: () {
-                    String data = logController.text;
-                    if(data.isNotEmpty) {
-                      widget.addClickAction(data, logController);
-                    }
-                  }
-                ),
+                Row(
+                 children: [
+                   IconButton(
+                       icon: const Icon(Icons.camera_alt),
+                       iconSize: 12,
+                       onPressed: () {
+                         String data = logController.text;
+                         if(data.isNotEmpty) {
+                           widget.addClickAction(data, logController);
+                         }
+                       }
+                   ),
+                   IconButton(
+                       icon: const Icon(Icons.add),
+                       iconSize: 12,
+                       onPressed: () {
+                         String data = logController.text;
+                         if(data.isNotEmpty) {
+                           widget.addClickAction(data, logController);
+                         }
+                       }
+                   ),
+                 ],
+                )
+
               ],
             ),
           ],
