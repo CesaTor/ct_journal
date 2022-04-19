@@ -38,6 +38,8 @@ dependencies:
   # HIVE
   hive: ^2.1.0
   hive_flutter: ^1.1.0
+  image_picker: ^0.8.5
+  record: ^3.0.4
 
 dev_dependencies:
   flutter_test:

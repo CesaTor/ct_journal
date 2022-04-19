@@ -1,6 +1,9 @@
 import 'package:ct_journal/costanti.dart';
 import 'package:ct_journal/models/log.dart';
+import 'package:ct_journal/widgets/audio_recorder.dart';
+import 'package:ct_journal/widgets/voice_recorder.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class LogBar extends StatefulWidget {
 
@@ -14,11 +17,12 @@ class LogBar extends StatefulWidget {
 class _LogBarState extends State<LogBar> {
 
   final TextEditingController logController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
+      height: 120,
       child: Container(
         color: CTLogBarBG,
         child: Column(
@@ -53,16 +57,24 @@ class _LogBarState extends State<LogBar> {
                 ),
                 Row(
                  children: [
-                   IconButton(
-                       icon: const Icon(Icons.camera_alt),
-                       iconSize: 12,
-                       onPressed: () {
-                         String data = logController.text;
-                         if(data.isNotEmpty) {
-                           widget.addClickAction(data, logController);
-                         }
-                       }
-                   ),
+                   // VoiceRecorder(),
+                   AudioRecorder(onStop: (path) {
+                     print("----------------------------------------------\nAudio produced at: $path\n----------------------------------------------------");
+                   }),
+                   // IconButton(
+                   //     icon: const Icon(Icons.camera_alt),
+                   //     iconSize: 12,
+                   //     onPressed: () async {
+                   //       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+                   //     }
+                   // ),
+                   // IconButton(
+                   //     icon: const Icon(Icons.collections),
+                   //     iconSize: 12,
+                   //     onPressed: () async {
+                   //       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                   //     }
+                   // ),
                    IconButton(
                        icon: const Icon(Icons.add),
                        iconSize: 12,

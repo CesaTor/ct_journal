@@ -10,9 +10,9 @@ class LogField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    int day = logData.logTime.day;
-    int month = logData.logTime.month;
-    int year = logData.logTime.year;
+    // int day = logData.logTime.day;
+    // int month = logData.logTime.month;
+    // int year = logData.logTime.year;
 
     int hour = logData.logTime.hour;
     int minutes = logData.logTime.minute;
