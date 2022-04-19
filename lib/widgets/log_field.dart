@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:ct_journal/costanti.dart';
 import 'package:ct_journal/models/log.dart';
+import 'package:ct_journal/widgets/audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 
 class LogField extends StatelessWidget {
   final Log logData;
@@ -15,6 +16,10 @@ class LogField extends StatelessWidget {
 
     int hour = logData.logTime.hour;
     int minutes = logData.logTime.minute;
+
+    Widget buildAudioW() {
+      return AudioPlayerW(filePath: logData.assetPaths[1]);
+    }
 
     Widget buildImgW() {
       return
@@ -56,8 +61,12 @@ class LogField extends StatelessWidget {
               logData.data.isNotEmpty
                   ? buildTextW()
                   : logData.assetPaths.isNotEmpty
+                  ? logData.assetPaths.first != ""
                   ? buildImgW()
-                  : const Text(""),
+                  : logData.assetPaths[1] != ""
+                  ? buildAudioW()
+                  : const Text("")
+                  : const Text("")
             ],
           ),
           const Divider(color: Colors.red,thickness: 2)

@@ -33,7 +33,8 @@ class _LogBarState extends State<LogBar> {
             maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
             controller: logController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder( borderSide: BorderSide(color: Colors.red, width: 2.0),),
+              border: OutlineInputBorder( borderSide: BorderSide(color: Colors.grey, width: 0.0),),
               contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
               hintText: 'This day is going to be beautiful ...',
             ),
@@ -60,6 +61,7 @@ class _LogBarState extends State<LogBar> {
                             "---------------------------------------------- \n"
                     );
                   }
+                  widget.addClickAction("", ["", path], logController);
                 }),
               ),
               Expanded(
