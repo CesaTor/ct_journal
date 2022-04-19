@@ -1,9 +1,11 @@
 import 'package:ct_journal/costanti.dart';
 import 'package:ct_journal/models/log.dart';
 import 'package:ct_journal/widgets/audio_recorder.dart';
-import 'package:ct_journal/widgets/voice_recorder.dart';
+import 'package:ct_journal/widgets/log_bar_icon.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LogBar extends StatefulWidget {
 
@@ -21,78 +23,90 @@ class _LogBarState extends State<LogBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: Container(
-        color: CTLogBarBG,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 30,
-              child: TextFormField(
-                controller: logController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(paddingSpace),
-                  hintText: 'This day is going to be beautiful',
-                ),
-              ),
+    return
+      Column(
+        children: [
+          TextFormField(
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.multiline,
+            minLines: null,
+            maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
+            controller: logController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
+              hintText: 'This day is going to be beautiful ...',
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.search),
-                      iconSize: 12,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.tag),
-                      iconSize: 12,
-                      onPressed: () {},
-                    ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    SizedBox(width: 10,),
+                    LogBarIcon(icon: Icons.search),
+                    LogBarIcon(icon: Icons.tag),
                   ],
                 ),
-                Row(
-                 children: [
-                   // VoiceRecorder(),
-                   AudioRecorder(onStop: (path) {
-                     print("----------------------------------------------\nAudio produced at: $path\n----------------------------------------------------");
-                   }),
-                   // IconButton(
-                   //     icon: const Icon(Icons.camera_alt),
-                   //     iconSize: 12,
-                   //     onPressed: () async {
-                   //       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-                   //     }
-                   // ),
-                   // IconButton(
-                   //     icon: const Icon(Icons.collections),
-                   //     iconSize: 12,
-                   //     onPressed: () async {
-                   //       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-                   //     }
-                   // ),
-                   IconButton(
-                       icon: const Icon(Icons.add),
-                       iconSize: 12,
-                       onPressed: () {
-                         String data = logController.text;
-                         if(data.isNotEmpty) {
-                           widget.addClickAction(data, logController);
-                         }
-                       }
-                   ),
-                 ],
-                )
+              ),
+              Expanded(
+                child: AudioRecorder(onStop: (path) {
+                  if (kDebugMode) {
+                    print(
+                        "---------------------------------------------- \n"
+                            "Audio produced at: $path \n"
+                            "---------------------------------------------- \n"
+                    );
+                  }
+                }),
+              ),
+              Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // VoiceRecorder(),
+                      LogBarIcon(icon: Icons.camera_alt, onClick: () async {
+                        final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+                        String path = "";
+                        if(image != null) {
+                          final directory = await getApplicationDocumentsDirectory();
+                          path = directory.path + "/" + image.name;
+                          await image.saveTo(path);
+                          widget.addClickAction("", [path], logController);
+                        }
+                        if (kDebugMode) {
+                          print("Image: $path");
+                        }
 
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+                      }),
+                      LogBarIcon(icon: Icons.collections, onClick: () async {
+                        final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                        String path = "";
+                        if(image != null) {
+                          final directory = await getApplicationDocumentsDirectory();
+                          path = directory.path + "/" + image.name;
+                          await image.saveTo(path);
+                          widget.addClickAction("", [path], logController);
+                        }
+                        if (kDebugMode) {
+                          print("Image: $path");
+                        }
+                      }),
+                      LogBarIcon(icon: Icons.add, onClick: () {
+                        String data = logController.text;
+                        if(data.isNotEmpty) {
+                          widget.addClickAction(data, [], logController);
+                        }
+                      }),
+                      const SizedBox(width: 10,)
+                    ],
+                  )
+              )
+            ],
+          ),
+        ],
+      );
   }
 }

@@ -37,11 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
         Column(
           children: [
             Expanded(
-                child: HomeList(logList: logList)
+                child:
+                HomeList(logList: logList),
             ),
-            LogBar(addClickAction: (data, controller) {
+            LogBar(addClickAction: (data, assetPaths, controller) {
               addData(
-                  Log(data: data, logTime: DateTime.now(), tags: [], assetPaths: [])
+                  Log(data: data, logTime: DateTime.now(), tags: [], assetPaths: assetPaths)
               );
               controller.clear();
             }),
