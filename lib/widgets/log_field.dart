@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:ct_journal/costanti.dart';
 import 'package:ct_journal/models/log.dart';
+import 'package:ct_journal/utils.dart';
 import 'package:ct_journal/widgets/audio_player.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +14,8 @@ class LogField extends StatelessWidget {
   Widget build(BuildContext context) {
 
     int hour = logData.logTime.hour;
-    int minutes = logData.logTime.minute;
+    int minute = logData.logTime.minute;
+    int second = logData.logTime.second;
 
     Widget buildAudioW() {
       return AudioPlayerW(filePath: logData.assetPaths[1]);
@@ -44,18 +44,14 @@ class LogField extends StatelessWidget {
       );
     }
 
+
+
     return Container(
       padding: const EdgeInsets.only(left: CTLogBarSearchPadding, right: CTLogBarSearchPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Expanded(child: Text("")),
-              Text("$hour:" + ((minutes > 9) ? "$minutes" : "0$minutes")),
-            ],
-          ),
+          // buildTimeW(),
           Row(
             children: [
               logData.data.isNotEmpty
@@ -69,7 +65,7 @@ class LogField extends StatelessWidget {
                   : const Text("")
             ],
           ),
-          const Divider(color: Colors.red,thickness: 2)
+          // const Divider(color: Colors.red,thickness: 2)
         ],
       ),
     );

@@ -27,21 +27,24 @@ class _LogBarState extends State<LogBar> {
       Column(
         children: [
           TextFormField(
+            cursorColor: Colors.yellow,
             textInputAction: TextInputAction.newline,
             keyboardType: TextInputType.multiline,
             minLines: null,
             maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
             controller: logController,
             decoration: const InputDecoration(
-              focusedBorder: OutlineInputBorder( borderSide: BorderSide(color: Colors.red, width: 2.0),),
-              border: OutlineInputBorder( borderSide: BorderSide(color: Colors.grey, width: 0.0),),
+              // focusedBorder: OutlineInputBorder( borderSide: BorderSide(color: Colors.red, width: 2.0),),
+              // border: OutlineInputBorder( borderSide: BorderSide(color: Colors.grey, width: 0.0),),
               contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
-              hintText: 'This day is going to be beautiful ...',
+              hintText: 'Start writing here!',
+              border: InputBorder.none,
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // TODO - search
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -52,23 +55,21 @@ class _LogBarState extends State<LogBar> {
                   ],
                 ),
               ),
+              // Audio Recorder
               Expanded(
                 child: AudioRecorder(onStop: (path) {
                   if (kDebugMode) {
-                    print(
-                        "---------------------------------------------- \n"
-                            "Audio produced at: $path \n"
-                            "---------------------------------------------- \n"
-                    );
+                    print("Audio produced at: $path");
                   }
                   widget.addClickAction("", ["", path], logController);
                 }),
               ),
+              // Camera assets and text
               Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // VoiceRecorder(),
+                      // add Image from Camera
                       LogBarIcon(icon: Icons.camera_alt, onClick: () async {
                         final XFile? image = await _picker.pickImage(source: ImageSource.camera);
                         String path = "";
@@ -83,6 +84,7 @@ class _LogBarState extends State<LogBar> {
                         }
 
                       }),
+                      // add Image from Gallery
                       LogBarIcon(icon: Icons.collections, onClick: () async {
                         final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
                         String path = "";
@@ -96,6 +98,7 @@ class _LogBarState extends State<LogBar> {
                           print("Image: $path");
                         }
                       }),
+                      // add text from TextField
                       LogBarIcon(icon: Icons.add, onClick: () {
                         String data = logController.text;
                         if(data.isNotEmpty) {
