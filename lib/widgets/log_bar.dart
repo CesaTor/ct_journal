@@ -26,20 +26,25 @@ class _LogBarState extends State<LogBar> {
     return
       Column(
         children: [
-          TextFormField(
-            cursorColor: Colors.yellow,
-            textInputAction: TextInputAction.newline,
-            keyboardType: TextInputType.multiline,
-            minLines: null,
-            maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
-            controller: logController,
-            decoration: const InputDecoration(
-              // focusedBorder: OutlineInputBorder( borderSide: BorderSide(color: Colors.red, width: 2.0),),
-              // border: OutlineInputBorder( borderSide: BorderSide(color: Colors.grey, width: 0.0),),
-              contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
-              hintText: 'Start writing here!',
-              border: InputBorder.none,
-            ),
+          Container(
+              constraints: const BoxConstraints(maxHeight: 100),
+              child: SingleChildScrollView(
+                child:
+                TextFormField(
+                  cursorColor: Colors.yellow,
+                  textInputAction: TextInputAction.newline,
+                  keyboardType: TextInputType.multiline,
+                  minLines: null,
+                  maxLines: null,  // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
+                  controller: logController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
+                    hintText: 'Start writing here!',
+                    border: InputBorder.none,
+                  ),
+                ),
+
+              )
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

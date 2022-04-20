@@ -50,8 +50,6 @@ class _HomeListState extends State<HomeList> {
         );
       }
       tmpDt = element.logTime;
-
-
       if(toRight.isNotEmpty){
         widgets.add(
           right(toRight)
@@ -76,7 +74,7 @@ class _HomeListState extends State<HomeList> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const Expanded(child: Text("")),
-        Text(dt2ys(dt)),
+        Text(dt2ys(dt), style: const TextStyle(fontSize: 18) ),
       ],
     );
   }
