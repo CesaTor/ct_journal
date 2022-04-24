@@ -17,10 +17,10 @@ class LogAdapter extends TypeAdapter<Log> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Log(
-      data: fields[0] as String,
-      logTime: fields[1] as DateTime,
-      tags: (fields[2] as List).cast<String>(),
-      assetPaths: (fields[3] as List).cast<String>(),
+      creationDate: fields[1] as DateTime,
+      text: fields[0] as String,
+      audioPath: fields[2] as String,
+      imagePath: fields[3] as String,
     );
   }
 
@@ -29,13 +29,13 @@ class LogAdapter extends TypeAdapter<Log> {
     writer
       ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.data)
+      ..write(obj.text)
       ..writeByte(1)
-      ..write(obj.logTime)
+      ..write(obj.creationDate)
       ..writeByte(2)
-      ..write(obj.tags)
+      ..write(obj.audioPath)
       ..writeByte(3)
-      ..write(obj.assetPaths);
+      ..write(obj.imagePath);
   }
 
   @override

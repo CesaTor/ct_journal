@@ -2,18 +2,19 @@ import 'dart:async';
 import 'package:ct_journal/costanti.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
-class AudioRecorder extends StatefulWidget {
+class CTAudioRecorder extends StatefulWidget {
   final void Function(String path) onStop;
 
-  const AudioRecorder({Key? key, required this.onStop}): super(key: key);
+  const CTAudioRecorder({Key? key, required this.onStop}): super(key: key);
 
   @override
-  _AudioRecorderState createState() => _AudioRecorderState();
+  _CTAudioRecorderState createState() => _CTAudioRecorderState();
 }
 
-class _AudioRecorderState extends State<AudioRecorder> {
+class _CTAudioRecorderState extends State<CTAudioRecorder> {
   bool _isRecording = false;
   int _recordDuration = 0;
   Timer? _timer;
@@ -105,7 +106,10 @@ class _AudioRecorderState extends State<AudioRecorder> {
   Future<void> _start() async {
     try {
       if (await _audioRecorder.hasPermission()) {
-        await _audioRecorder.start();
+        final directory = await getApplicationDocumentsDirectory();
+        await _audioRecorder.start(
+          path: directory.path + "/audio/${DateTime.now().toUtc()}.m4a", // required
+        );
 
         bool isRecording = await _audioRecorder.isRecording();
         setState(() {

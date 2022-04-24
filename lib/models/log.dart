@@ -3,20 +3,25 @@ import 'package:hive/hive.dart';
 
 part 'log.g.dart';
 
-typedef LogCallBack = Function(String data, List<String> assetPaths, TextEditingController tec);
+typedef LogCallBack = Function(
+    TextEditingController tec,
+    {String text,
+    String audioPath,
+    String imagePath});
 
 @HiveType(typeId: 1)
 class Log {
 
   @HiveField(0)
-  late String data;
+  String text;
   @HiveField(1)
-  late DateTime logTime;
+  DateTime creationDate;
   @HiveField(2)
-  late List<String> tags;
+  String audioPath;
   @HiveField(3)
-  late List<String> assetPaths;
+  String imagePath;
 
-  Log(
-      {required this.data, required this.logTime, required this.tags, required this.assetPaths});
+
+  Log({required this.creationDate, this.text = "", this.audioPath = "", this.imagePath = ""});
 }
+

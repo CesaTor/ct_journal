@@ -1,24 +1,23 @@
 import 'package:ct_journal/costanti.dart';
 import 'package:ct_journal/models/log.dart';
 import 'package:ct_journal/utils.dart';
-import 'package:ct_journal/widgets/log_field.dart';
+import 'package:ct_journal/widgets/ct_log.dart';
 import 'package:flutter/material.dart';
 
-class HomeList extends StatefulWidget {
+class LogList extends StatefulWidget {
 
   final List<Log> logList;
-  const HomeList({Key? key, required this.logList}) : super(key: key);
+  const LogList({Key? key, required this.logList}) : super(key: key);
 
   @override
-  State<HomeList> createState() => _HomeListState();
+  State<LogList> createState() => _LogListState();
 }
 
-class _HomeListState extends State<HomeList> {
+class _LogListState extends State<LogList> {
 
   List<Widget> bodyBuilder() {
     List<Widget> widgets = [];
 
-    // Var Appoggio
     DateTime tmpDt = DateTime(1900);
     int currY = 1900;
     int currM = 00;
@@ -30,33 +29,35 @@ class _HomeListState extends State<HomeList> {
 
       // If logTime is not default
       if(
-          element.logTime.year != currY ||
-          element.logTime.month != currM ||
-          element.logTime.day != currD
+          element.creationDate.year != currY ||
+          element.creationDate.month != currM ||
+          element.creationDate.day != currD
       ) {
-        currY = element.logTime.year;
-        currM = element.logTime.month;
-        currD = element.logTime.day;
+        currY = element.creationDate.year;
+        currM = element.creationDate.month;
+        currD = element.creationDate.day;
 
         // If it's a different day, show the date
+        toRight.add(Divider(color: Colors.yellow, thickness: 1),);
         toRight.add(
-            buildYearW(element.logTime)
+            buildYearW(element.creationDate)
         );
+        toRight.add(Divider(color: Colors.yellow, thickness: 1),);
       }
       // Post the time only if it differs from 10 minutes
-      if(element.logTime.difference(tmpDt).inMinutes >= 10) {
+      if(element.creationDate.difference(tmpDt).inMinutes >= 10) {
         toRight.add(
-            buildTimeW(element.logTime)
+            buildTimeW(element.creationDate)
         );
       }
-      tmpDt = element.logTime;
+      tmpDt = element.creationDate;
       if(toRight.isNotEmpty){
         widgets.add(
           right(toRight)
         );
       }
 
-      widgets.add(LogField(logData: element));
+      widgets.add(CTLog(logData: element));
     }
 
     return widgets.reversed.toList();
