@@ -17,25 +17,22 @@ class LogAdapter extends TypeAdapter<Log> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Log(
-      creationDate: fields[1] as DateTime,
-      text: fields[0] as String,
-      audioPath: fields[2] as String,
-      imagePath: fields[3] as String,
+      creationDate: fields[0] as DateTime,
+      data: fields[1] as String,
+      type: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Log obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.text)
-      ..writeByte(1)
-      ..write(obj.creationDate)
-      ..writeByte(2)
-      ..write(obj.audioPath)
       ..writeByte(3)
-      ..write(obj.imagePath);
+      ..writeByte(0)
+      ..write(obj.creationDate)
+      ..writeByte(1)
+      ..write(obj.data)
+      ..writeByte(2)
+      ..write(obj.type);
   }
 
   @override

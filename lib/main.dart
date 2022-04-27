@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/constants.dart';
 import 'package:ct_journal/models/log.dart';
 import 'package:ct_journal/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +11,14 @@ Future<void> init() async {
   // Init HiveDb
   await Hive.initFlutter();
   Hive.registerAdapter(LogAdapter());
-  box = await Hive.openBox('a');
+  box = await Hive.openBox('cd');
 
-  // Create asset folders
+  // Create asset folders TODO separate
   final directory = await getApplicationDocumentsDirectory();
-  if(!await Directory(directory.path+"/images").exists()){
-    await Directory(directory.path+"/images").create();
+  if(!await Directory(directory.path+"/assets").exists()){
+    await Directory(directory.path+"/assets").create(recursive: true);
   }
-  if(!await Directory(directory.path+"/audio").exists()){
-    await Directory(directory.path+"/audio").create();
-  }
-
+  assetPath = directory.path+"/assets";
 }
 
 void main() async {

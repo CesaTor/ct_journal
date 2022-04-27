@@ -1,4 +1,4 @@
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/constants.dart';
 import 'package:flutter/material.dart';
 
 class CTHomeBarIcon extends StatefulWidget {

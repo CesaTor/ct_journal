@@ -1,7 +1,11 @@
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/constants.dart';
 import 'package:ct_journal/models/log.dart';
+import 'package:ct_journal/models/handler_factory.dart';
 import 'package:ct_journal/widgets/ct_log_list.dart';
 import 'package:ct_journal/widgets/ct_home_bar.dart';
+import 'package:ct_journal/widgets/type_handlers/audio_handler.dart';
+import 'package:ct_journal/widgets/type_handlers/image_handler.dart';
+import 'package:ct_journal/widgets/type_handlers/text_handler.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,12 +19,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Log> _logList = [];
+  late final HandlerFactory handlerFactory;
 
   _HomePageState() {
     // Getting logs from HiveDb's box
     for(Log log in box.values) {
       _logList.add(log);
     }
+    // Init Factory
+    handlerFactory = HandlerFactory(handlers: [
+      ImageHandler(),
+      TextHandler(),
+      // AudioHandler(),
+    ]);
+
   }
 
   // Adding logs to local data and save
@@ -30,7 +42,15 @@ class _HomePageState extends State<HomePage> {
       box.add(log);
     });
   }
-  // TODO - removeLog - editLog
+
+  void logCallBack({
+    required String data,
+    required String type}) {
+
+    addLog(
+        Log(data: data, creationDate: DateTime.now(), type: type)
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +62,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
                 child:
-                LogList(logList: _logList),
+                CTLogList(logList: _logList, handlerFactory: handlerFactory),
             ), // List of all Logs // TODO - test with big data and in case, find a way to reduce lag (es. get 10 logs x time)
-            CTHomeBar(addClickAction: (tec, {text = "", audioPath = "", imagePath = ""}) {
-              addLog(
-                  Log(text: text, creationDate: DateTime.now(), audioPath: audioPath, imagePath: imagePath)
-              );
-              tec.clear();
-            }), // Why is it not a BottomNavBar? -> keyboard pops up -> it gets hidden under
+            CTHomeBar(addClickAction: logCallBack, handlerFactory: handlerFactory,), // Why is it not a BottomNavBar? -> keyboard pops up -> it gets hidden under
           ],
         )
     );

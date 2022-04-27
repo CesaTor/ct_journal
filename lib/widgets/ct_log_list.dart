@@ -1,19 +1,21 @@
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/constants.dart';
 import 'package:ct_journal/models/log.dart';
+import 'package:ct_journal/models/handler_factory.dart';
 import 'package:ct_journal/utils.dart';
 import 'package:ct_journal/widgets/ct_log.dart';
 import 'package:flutter/material.dart';
 
-class LogList extends StatefulWidget {
+class CTLogList extends StatefulWidget {
 
   final List<Log> logList;
-  const LogList({Key? key, required this.logList}) : super(key: key);
+  final HandlerFactory handlerFactory;
+  const CTLogList({Key? key, required this.logList, required this.handlerFactory}) : super(key: key);
 
   @override
-  State<LogList> createState() => _LogListState();
+  State<CTLogList> createState() => _CTLogListState();
 }
 
-class _LogListState extends State<LogList> {
+class _CTLogListState extends State<CTLogList> {
 
   List<Widget> bodyBuilder() {
     List<Widget> widgets = [];
@@ -38,11 +40,11 @@ class _LogListState extends State<LogList> {
         currD = element.creationDate.day;
 
         // If it's a different day, show the date
-        toRight.add(Divider(color: Colors.yellow, thickness: 1),);
+        toRight.add(const Divider(color: Colors.yellow, thickness: 1),);
         toRight.add(
             buildYearW(element.creationDate)
         );
-        toRight.add(Divider(color: Colors.yellow, thickness: 1),);
+        toRight.add(const Divider(color: Colors.yellow, thickness: 1),);
       }
       // Post the time only if it differs from 10 minutes
       if(element.creationDate.difference(tmpDt).inMinutes >= 10) {
@@ -57,7 +59,7 @@ class _LogListState extends State<LogList> {
         );
       }
 
-      widgets.add(CTLog(logData: element));
+      widgets.add(CTLog(logData: element, hf: widget.handlerFactory));
     }
 
     return widgets.reversed.toList();

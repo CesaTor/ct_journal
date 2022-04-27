@@ -10,3 +10,5 @@ const double CTLogBarIconSize = 20;
 const double CTLogBarSearchPadding = 15;
 
 late Box<Log> box;
+
+late String assetPath;

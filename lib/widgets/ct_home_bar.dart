@@ -1,16 +1,15 @@
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/models/handler_factory.dart';
 import 'package:ct_journal/models/log.dart';
-import 'package:ct_journal/widgets/ct_audio_recorder.dart';
 import 'package:ct_journal/widgets/ct_home_bar_icon.dart';
-import 'package:flutter/foundation.dart';
+import 'package:ct_journal/widgets/type_handlers/type_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/rendering.dart';
 
 class CTHomeBar extends StatefulWidget {
 
   final LogCallBack addClickAction;
-  const CTHomeBar({Key? key, required this.addClickAction}) : super(key: key);
+  final HandlerFactory handlerFactory;
+  const CTHomeBar({Key? key, required this.addClickAction, required this.handlerFactory}) : super(key: key);
 
   @override
   State<CTHomeBar> createState() => _CTHomeBarState();
@@ -18,40 +17,63 @@ class CTHomeBar extends StatefulWidget {
 
 class _CTHomeBarState extends State<CTHomeBar> {
 
-  final TextEditingController _logController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
+  late Widget inputWidget;
+  late List<Widget> controllers = [];
+
+  void initWidgets() {
+
+    List<Widget> iws = [];
+    controllers = [];
+
+    for(var h in widget.handlerFactory.getHandlers()) {
+
+      // TODO - make the same as others
+
+      for(var c in h.controllers) {
+        if(c.getInputWidget() != null) {
+          iws.add(c.getInputWidget()!);
+        }
+      }
+
+      controllers.add(_buildTypeButton(th: h));
+    }
+
+
+    // Input Widgets
+    if(iws.isEmpty) {
+      // TODO nop
+      inputWidget = const Text("");
+    }
+    else if(iws.length == 1) {
+      inputWidget = iws.first;
+    } else {
+      inputWidget = Column(children: iws);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    initWidgets();
     return
       Column(
         children: [
-          _buildHBInput(),
+          inputWidget,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+                  _buildHBUtilityBtns(),
+              // Enabled functions
               Expanded(
-                  child: _buildHBUtilityBtns()
-              ),
-              // Audio Recorder
-              Expanded(
-                child: CTAudioRecorder(onStop: (path) {
-                  if (kDebugMode) {
-                    print("Audio produced at: $path");
-                  }
-                  widget.addClickAction(_logController, audioPath: path);
-                }),
-              ),
-              // Camera assets and text
-              Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _buildCameraInputBtn(),
-                      _buildGalleryInputBtn(),
-                      _buildAddBtn(),
-                      const SizedBox(width: 10,)
-                    ],
+                  child:
+                  SingleChildScrollView(
+                    reverse: true,
+                    scrollDirection: Axis.horizontal,
+                      child:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: controllers,
+                      )
                   )
               )
             ],
@@ -60,38 +82,27 @@ class _CTHomeBarState extends State<CTHomeBar> {
       );
   }
 
-  // add text from TextField
-  CTHomeBarIcon _buildAddBtn() {
-    return CTHomeBarIcon(icon: Icons.add, onClick: () {
-      String text = _logController.text;
-      if(text.isNotEmpty) {
-        widget.addClickAction(_logController, text: text);
-      }
-    });
-  }
+  Widget _buildTypeButton({required TypeHandler th}) {
 
-  Widget _buildHBInput() {
-    return Container(
-        constraints: const BoxConstraints(maxHeight: 100),
-        child: SingleChildScrollView(
-          child:
-          TextFormField(
-            autofocus: true,
-            keyboardAppearance: Brightness.dark,
-            cursorColor: Colors.yellow,
-            textInputAction: TextInputAction.newline,
-            keyboardType: TextInputType.multiline,
-            minLines: null,
-            maxLines: null,  // If null, there is no limit to the number of lines
-            controller: _logController,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.all(CTLogBarSearchPadding),
-              hintText: 'Start writing here!',
-              border: InputBorder.none,
-            ),
-          ),
-        )
-    );
+    if(th.controllers.length > 1){
+
+      List<Widget> cld = [];
+
+      for(var c in th.controllers) {
+        cld.add(
+            CTHomeBarIcon(icon: c.getButtonIconData(), onClick: () async {
+              widget.addClickAction(data: await c.getData(), type: th.getType());
+            })
+        );
+      }
+
+      return Row(
+        children: cld,
+      );
+    }
+    return CTHomeBarIcon(icon: th.controllers.first.getButtonIconData(), onClick: () async {
+      widget.addClickAction(data: await th.controllers.first.getData(), type: th.getType());
+    });
   }
 
   // TODO - search
@@ -106,39 +117,4 @@ class _CTHomeBarState extends State<CTHomeBar> {
     );
   }
 
-  // add Image from Camera
-  CTHomeBarIcon _buildCameraInputBtn() {
-    return
-      CTHomeBarIcon(icon: Icons.camera_alt, onClick: () async {
-        final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-        String path = "";
-        if(image != null) {
-          final directory = await getApplicationDocumentsDirectory();
-          path = directory.path + "/images/" + image.name;
-          await image.saveTo(path);
-          widget.addClickAction(_logController, imagePath: path);
-        }
-        if (kDebugMode) {
-          print("Image: $path");
-        }
-      });
-  }
-
-  // add Image from Gallery
-  CTHomeBarIcon _buildGalleryInputBtn() {
-    return
-      CTHomeBarIcon(icon: Icons.collections, onClick: () async {
-        final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-        String path = "";
-        if(image != null) {
-          final directory = await getApplicationDocumentsDirectory();
-          path = directory.path + "/images/" + image.name;
-          await image.saveTo(path);
-          widget.addClickAction(_logController, imagePath: path);
-        }
-        if (kDebugMode) {
-          print("Image: $path");
-        }
-      });
-  }
 }

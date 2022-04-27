@@ -1,27 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
+// command to generate type adapters
+// flutter packages pub run build_runner build
 part 'log.g.dart';
 
-typedef LogCallBack = Function(
-    TextEditingController tec,
-    {String text,
-    String audioPath,
-    String imagePath});
+typedef LogCallBack = void Function({required String data, required String type});
 
 @HiveType(typeId: 1)
 class Log {
-
   @HiveField(0)
-  String text;
-  @HiveField(1)
   DateTime creationDate;
+  @HiveField(1)
+  String data;
   @HiveField(2)
-  String audioPath;
-  @HiveField(3)
-  String imagePath;
+  String type;
 
-
-  Log({required this.creationDate, this.text = "", this.audioPath = "", this.imagePath = ""});
+  Log({required this.creationDate, required this.data, required this.type});
 }
-

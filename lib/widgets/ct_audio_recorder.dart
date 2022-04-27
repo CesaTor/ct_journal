@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:ct_journal/costanti.dart';
+import 'package:ct_journal/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';

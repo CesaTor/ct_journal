@@ -42,6 +42,7 @@ dependencies:
   record: ^3.0.4
   just_audio: ^0.9.20
   intl:
+  context_menus: ^1.0.1
 
 dev_dependencies:
   flutter_test:

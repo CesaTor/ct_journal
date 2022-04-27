@@ -9,6 +9,11 @@ class CTAudioPlayer extends  StatefulWidget {
   State<CTAudioPlayer> createState() => _CTAudioPlayerState();
 }
 
+// TODO - do it better
+// - add slider finger support
+// - better buttons
+// - better interface
+
 class _CTAudioPlayerState extends State<CTAudioPlayer> {
 
   int _maxDuration = 100;
